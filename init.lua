@@ -225,6 +225,14 @@ require('lazy').setup({
         component_separators = '|',
         section_separators = '',
       },
+      sections = {
+        lualine_c = {
+          {
+            'filename',
+            path = 1,
+          },
+        },
+      },
     },
   },
 
@@ -268,6 +276,24 @@ require('lazy').setup({
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
     build = ':TSUpdate',
+  },
+
+  {
+    "christoomey/vim-tmux-navigator",
+    cmd = {
+      "TmuxNavigateLeft",
+      "TmuxNavigateDown",
+      "TmuxNavigateUp",
+      "TmuxNavigateRight",
+      "TmuxNavigatePrevious",
+    },
+    keys = {
+      { "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+      { "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+      { "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+      { "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+      { "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+    },
   },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
@@ -326,6 +352,11 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+-- My custom options.
+vim.o.splitright = true
+vim.o.wrap = false
+vim.o.relativenumber = true
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -341,6 +372,8 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+vim.keymap.set('i', 'jj', '<esc>', { desc = 'Switch from insert to normal mode' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -426,6 +459,7 @@ vim.keymap.set('n', '<leader>s/', telescope_live_grep_open_files, { desc = '[S]e
 vim.keymap.set('n', '<leader>ss', require('telescope.builtin').builtin, { desc = '[S]earch [S]elect Telescope' })
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', '<C-]>', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
@@ -538,7 +572,7 @@ local on_attach = function(_, bufnr)
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  --nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -587,8 +621,8 @@ require('mason-lspconfig').setup()
 --  define the property 'filetypes' to the map in question.
 local servers = {
   -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
+  gopls = {},
+  pyright = {},
   -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
